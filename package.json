@@ -16,6 +16,7 @@
     "remove:ios:build": "cd ios && rm -rf build"
   },
   "dependencies": {
+    "@bam.tech/react-native-image-resizer": "^3.0.7",
     "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
