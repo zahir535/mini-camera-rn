@@ -13,7 +13,8 @@
     "clean:ios": "npm run clean:pods && cd ios && rm -rf build",
     "clean:modules": "rm -rf node_modules && yarn",
     "install:pods": "cd ios && pod install",
-    "remove:ios:build": "cd ios && rm -rf build"
+    "remove:ios:build": "cd ios && rm -rf build",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@bam.tech/react-native-image-resizer": "^3.0.7",
@@ -22,7 +23,8 @@
     "react-native": "0.72.6",
     "react-native-reanimated": "^3.8.1",
     "react-native-vision-camera": "^3.9.1",
-    "react-native-worklets-core": "^0.4.0"
+    "react-native-worklets-core": "^0.4.0",
+    "vision-camera-base64-v3": "^2.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,0 +1,77 @@
+diff --git a/node_modules/vision-camera-base64-v3/VisionCameraBase64Plugin.podspec b/node_modules/vision-camera-base64-v3/VisionCameraBase64Plugin.podspec
+index ecb38b3..3b312e5 100644
+--- a/node_modules/vision-camera-base64-v3/VisionCameraBase64Plugin.podspec
++++ b/node_modules/vision-camera-base64-v3/VisionCameraBase64Plugin.podspec
+@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
+   s.license      = package["license"]
+   s.authors      = package["author"]
+ 
+-  s.platforms    = { :ios => "13.4" }
++  s.platforms    = { :ios => "12.4" }
+   s.source       = { :git => "https://github.com/trustee-wallet/vision-camera-base64.git", :tag => "#{s.version}" }
+ 
+   s.source_files = "ios/**/*.{h,m,mm,swift}"
+diff --git a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java
+index ab5d28a..4f25ed4 100644
+--- a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java
++++ b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java
+@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
+ import com.mrousavy.camera.frameprocessor.Frame;
+ import com.mrousavy.camera.frameprocessor.FrameProcessorPlugin;
++import com.mrousavy.camera.frameprocessor.VisionCameraProxy;
+ import java.util.Map;
+ 
+ import android.media.Image;
+@@ -11,6 +12,8 @@ import android.annotation.SuppressLint;
+ 
+ 
+ public class VisionCameraBase64Plugin extends FrameProcessorPlugin {
++  VisionCameraBase64Plugin(@NonNull VisionCameraProxy proxy, @Nullable Map<String, Object> options) {}
++  
+   @SuppressLint("NewApi")
+   @Nullable
+   @Override
+@@ -18,8 +21,4 @@ public class VisionCameraBase64Plugin extends FrameProcessorPlugin {
+     // TODO: image format and quality must come from params
+     return BitmapUtils.convertYuvToRgba(frame.getImage());
+   }
+-
+-  VisionCameraBase64Plugin(@Nullable Map<String, Object> options) {
+-    super(options);
+-  }
+ }
+\ No newline at end of file
+diff --git a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java
+index 5c745a6..a8b8e56 100644
+--- a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java
++++ b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java
+@@ -14,10 +14,7 @@ import java.util.List;
+ 
+ public class VisionCameraBase64PluginPackage implements ReactPackage {
+   static {
+-    FrameProcessorPluginRegistry.addFrameProcessorPlugin(
+-            "frameToBase64",
+-            options -> new VisionCameraBase64Plugin(options)
+-    );
++    FrameProcessorPluginRegistry.addFrameProcessorPlugin("frameToBase64",VisionCameraBase64Plugin::new);
+   }
+ 
+   @NonNull
+diff --git a/node_modules/vision-camera-base64-v3/ios/VisionCameraBase64Plugin.m b/node_modules/vision-camera-base64-v3/ios/VisionCameraBase64Plugin.m
+index dd8322d..bb50242 100644
+--- a/node_modules/vision-camera-base64-v3/ios/VisionCameraBase64Plugin.m
++++ b/node_modules/vision-camera-base64-v3/ios/VisionCameraBase64Plugin.m
+@@ -7,9 +7,9 @@ @implementation Plugins
+ 
+     + (void) load {
+         [FrameProcessorPluginRegistry addFrameProcessorPlugin:@"frameToBase64"
+-                                              withInitializer:^FrameProcessorPlugin*(NSDictionary* options) {
+-            return [[VisionCameraBase64Plugin alloc] init];
+-        }];
++                                        withInitializer:^FrameProcessorPlugin* (VisionCameraProxyHolder* proxy, NSDictionary* options) {
++            return [[VisionCameraBase64Plugin alloc] initWithProxy:proxy withOptions:options];
++    }];
+     }
+ 
+ @end
