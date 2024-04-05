@@ -83,10 +83,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file('mini-camera-upload-key.keystore')
+            storePassword 'P@ssw0rd123!'
+            keyAlias 'mini-camera-key'
+            keyPassword 'P@ssw0rd123!'
         }
     }
     buildTypes {
