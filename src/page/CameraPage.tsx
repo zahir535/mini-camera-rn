@@ -4,6 +4,7 @@ import { useCameraPermission, useCameraDevice, Camera, CameraRuntimeError, Photo
 import { useSharedValue } from "react-native-worklets-core";
 import { RNImageResizer } from "../integrations";
 import { toBase64 } from "vision-camera-base64-v3";
+import { btoa, atob, fromByteArray } from "react-native-quick-base64";
 
 export const CameraPage = () => {
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -22,11 +23,11 @@ export const CameraPage = () => {
   const handleTakePic = async () => {
     console.log("handleTakePic run");
     if (camera !== null && camera.current) {
-      const file: PhotoFile = await camera.current.takePhoto({});
-      // interchange width and height because of wrong orientation
-      const filePath = `file://${file.path}`;
-      const resizeResponse = await RNImageResizer.createResizedImage(filePath, file.width, file.height, "PNG", 100);
-      setPhotoUri(resizeResponse?.uri || "");
+      // const file: PhotoFile = await camera.current.takePhoto({});
+      // // interchange width and height because of wrong orientation
+      // const filePath = `file://${file.path}`;
+      // const resizeResponse = await RNImageResizer.createResizedImage(filePath, file.width, file.height, "PNG", 100);
+      // setPhotoUri(resizeResponse?.uri || "");
 
       takePic.value = true;
     }
@@ -53,26 +54,42 @@ export const CameraPage = () => {
   const frameProcessor = useFrameProcessor((frame) => {
     "worklet";
 
-    if (!takePic) {
-      console.log("SAVING FRAME...");
+    console.log(">>> takePic", takePic.value);
+
+    if (takePic.value) {
+      // console.log("SAVING FRAME...");
       try {
-        const imageAsBase64 = toBase64(frame).toString();
-        isScanned.value = true;
-        const metadata = {
-          height: frame.height,
-          width: frame.width,
-          isMirrored: frame.isMirrored,
-          orientation: frame.orientation,
-        };
+        // const imageAsBase64 = toBase64(frame).toString();
+        const base64Buffer: ArrayBuffer = frame.toArrayBuffer();
+        console.log(">>>>>>>>>>>>>> 1");
+        const base64Uint = new Uint8Array(base64Buffer);
+        console.log(">>>>>>>>>>>>>> 2");
 
-        base64Image.value = `data:image/png;base64, ${imageAsBase64}`;
+        const enc = new TextDecoder("utf-8");
+        const base64Array = enc.decode(base64Uint);
+        // const base64Array = fromByteArray(base64Uint);
+        // console.log(">>>>>>>>>>>>>> 3");
+        // const imageAsBase64 = btoa(base64Array);
+        // console.log(">>>>>>>>>>>>>> 4");
 
-        console.log(">>>> metadata", metadata);
+        // isScanned.value = true;
+        // const metadata = {
+        //   height: frame.height,
+        //   width: frame.width,
+        //   isMirrored: frame.isMirrored,
+        //   orientation: frame.orientation,
+        // };
+
+        // console.log("imageAsBase64", imageAsBase64);
+
+        // base64Image.value = `data:image/png;base64, ${imageAsBase64}`;
+
+        // console.log(">>>> metadata", metadata);
+
+        // takePic.value = false;
       } catch (error) {
         console.log("Error in saving image", JSON.stringify(error));
       }
-
-      takePic.value = false;
     }
 
     // console.log(">>> frame", frame.pixelFormat);
@@ -90,6 +107,7 @@ export const CameraPage = () => {
           photo={true}
           ref={camera}
           video={false}
+          frameProcessor={frameProcessor}
           // frameProcessor={isScanned.value === false ? frameProcessor : undefined}
         />
       )}
@@ -103,11 +121,11 @@ export const CameraPage = () => {
         </View>
       ) : null}
 
-      {photoUri !== "" ? (
+      {/* {photoUri !== "" ? (
         <View>
           <Image source={{ uri: photoUri }} style={{ height: 200, width: 200 }} />
         </View>
-      ) : null}
+      ) : null} */}
     </View>
   );
 };
