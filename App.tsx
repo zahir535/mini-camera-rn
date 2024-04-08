@@ -9,6 +9,7 @@ import React from "react";
 import { SafeAreaView, StatusBar } from "react-native";
 
 import { CameraPage } from "./src/page/CameraPage";
+import "react-native-polyfill-globals/auto";
 
 function App(): JSX.Element {
   return (

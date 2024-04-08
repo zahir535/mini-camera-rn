@@ -16,6 +16,9 @@ import { toBase64 } from "vision-camera-base64-v3";
 import { btoa, atob, fromByteArray } from "react-native-quick-base64";
 import { polyfill as polyfillEncoding } from "react-native-polyfill-globals/src/encoding";
 
+// import { polyfill } from "react-native-polyfill-globals";
+// polyfill();
+
 export const CameraPage = () => {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
@@ -143,8 +146,9 @@ export const CameraPage = () => {
           console.log(">>>>>>> 2");
 
           // m1- TextDecoder is for browser. need to expose
-          // const enc = new TextDecoder("utf-8");
-          // const base64Array = enc.decode(base64Uint);
+          const enc = new polyfillEncoding.TextDecoder("utf-8");
+          const base64Array = enc.decode(base64Uint);
+          console.log(">>>>>>>>>> 3");
 
           // m2 - TextDecoder is for browser. need to expose
           // const base64Array = new TextDecoder().decode(base64Uint);
