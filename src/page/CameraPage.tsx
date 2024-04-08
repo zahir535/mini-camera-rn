@@ -14,10 +14,11 @@ import { useSharedValue } from "react-native-worklets-core";
 import { RNImageResizer } from "../integrations";
 import { toBase64 } from "vision-camera-base64-v3";
 import { btoa, atob, fromByteArray } from "react-native-quick-base64";
-import { polyfill as polyfillEncoding } from "react-native-polyfill-globals/src/encoding";
+// import { polyfill as polyfillEncoding } from "react-native-polyfill-globals/src/encoding";
+import { encode, decode } from "base-64";
 
-// import { polyfill } from "react-native-polyfill-globals";
-// polyfill();
+import { polyfill } from "react-native-polyfill-globals";
+polyfill();
 
 export const CameraPage = () => {
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -146,7 +147,7 @@ export const CameraPage = () => {
           console.log(">>>>>>> 2");
 
           // m1- TextDecoder is for browser. need to expose
-          const enc = new polyfillEncoding.TextDecoder("utf-8");
+          const enc = new TextDecoder("utf-8");
           const base64Array = enc.decode(base64Uint);
           console.log(">>>>>>>>>> 3");
 
@@ -183,9 +184,11 @@ export const CameraPage = () => {
           // m9
           // const buffer = Buffer.from(base64Buffer); //returned data
           // const imageAsBase64 = buffer.toString("base64");
-          console.log(">>>>>>>>>> 3");
-
           // console.log(">>>>>>>>>> 3");
+
+          // m10
+          const imageAsBase64 = encode(base64Array);
+          console.log(">>>>>>>>>> 3");
 
           // console.log(">>>>>>>>>>>>>> 3");
           // const imageAsBase64 = btoa(base64Array);
