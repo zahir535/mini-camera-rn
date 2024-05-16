@@ -53,7 +53,7 @@ export const CameraPage = () => {
   const frameProcessor = useFrameProcessor((frame) => {
     "worklet";
 
-    if (!takePic) {
+    if (!takePic.value) {
       console.log("SAVING FRAME...");
       try {
         const imageAsBase64 = toBase64(frame).toString();
