@@ -1,0 +1,41 @@
+diff --git a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/frameprocessors/Frame.java b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/frameprocessors/Frame.java
+index 0d649e7..5e0731d 100644
+--- a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/frameprocessors/Frame.java
++++ b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/frameprocessors/Frame.java
+@@ -35,13 +35,13 @@ public class Frame {
+         return imageProxy;
+     }
+ 
+-    @OptIn(markerClass = ExperimentalGetImage.class)
+-    public Image getImage() throws FrameInvalidError {
+-        assertIsValid();
++    // @OptIn(markerClass = ExperimentalGetImage.class)
++    // public Image getImage() throws FrameInvalidError {
++    public Image getImage() {
+         Image image = imageProxy.getImage();
+-        if (image == null) {
+-            throw new FrameInvalidError();
+-        }
++        // if (image == null) {
++        //     throw new FrameInvalidError();
++        // }
+         return image;
+     }
+ 
+diff --git a/node_modules/react-native-vision-camera/src/frame-processors/runAsync.ts b/node_modules/react-native-vision-camera/src/frame-processors/runAsync.ts
+index c27ed78..c69624f 100644
+--- a/node_modules/react-native-vision-camera/src/frame-processors/runAsync.ts
++++ b/node_modules/react-native-vision-camera/src/frame-processors/runAsync.ts
+@@ -16,7 +16,11 @@ try {
+   const Worklets = WorkletsProxy.Worklets
+   isAsyncContextBusy = Worklets.createSharedValue(false)
+ 
+-  const asyncContext = Worklets.createContext('VisionCamera.async')
++  // runAsync not executing or app crash
++  // const asyncContext = Worklets.createContext('VisionCamera.async')
++  
++  // hotfix - rnvc issue #2820
++  const asyncContext = Worklets.defaultContext;
+   runOnAsyncContext = asyncContext.createRunAsync((frame: Frame, func: () => void) => {
+     'worklet'
+     try {
