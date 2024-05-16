@@ -11,15 +11,29 @@ index ecb38b3..3b312e5 100644
    s.source       = { :git => "https://github.com/trustee-wallet/vision-camera-base64.git", :tag => "#{s.version}" }
  
    s.source_files = "ios/**/*.{h,m,mm,swift}"
+diff --git a/node_modules/vision-camera-base64-v3/android/gradle.properties b/node_modules/vision-camera-base64-v3/android/gradle.properties
+index 7bea6b4..bc71dfd 100644
+--- a/node_modules/vision-camera-base64-v3/android/gradle.properties
++++ b/node_modules/vision-camera-base64-v3/android/gradle.properties
+@@ -1,4 +1,4 @@
+-VisionCameraBase64Plugin_kotlinVersion=1.7.0
++VisionCameraBase64Plugin_kotlinVersion=1.7.2
+ VisionCameraBase64Plugin_minSdkVersion=21
+ VisionCameraBase64Plugin_targetSdkVersion=31
+ VisionCameraBase64Plugin_compileSdkVersion=31
 diff --git a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java
-index ab5d28a..4f25ed4 100644
+index ab5d28a..b6a8be4 100644
 --- a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java
 +++ b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64Plugin.java
-@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
+@@ -2,8 +2,9 @@ package com.visioncamerabase64plugin;
+ 
+ import androidx.annotation.NonNull;
  import androidx.annotation.Nullable;
- import com.mrousavy.camera.frameprocessor.Frame;
- import com.mrousavy.camera.frameprocessor.FrameProcessorPlugin;
-+import com.mrousavy.camera.frameprocessor.VisionCameraProxy;
+-import com.mrousavy.camera.frameprocessor.Frame;
+-import com.mrousavy.camera.frameprocessor.FrameProcessorPlugin;
++import com.mrousavy.camera.frameprocessors.Frame;
++import com.mrousavy.camera.frameprocessors.FrameProcessorPlugin;
++import com.mrousavy.camera.frameprocessors.VisionCameraProxy;
  import java.util.Map;
  
  import android.media.Image;
@@ -43,9 +57,20 @@ index ab5d28a..4f25ed4 100644
  }
 \ No newline at end of file
 diff --git a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java
-index 5c745a6..a8b8e56 100644
+index 5c745a6..03b99a0 100644
 --- a/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java
 +++ b/node_modules/vision-camera-base64-v3/android/src/main/java/com/visioncamerabase64plugin/VisionCameraBase64PluginPackage.java
+@@ -5,8 +5,8 @@ import com.facebook.react.ReactPackage;
+ import com.facebook.react.bridge.NativeModule;
+ import com.facebook.react.bridge.ReactApplicationContext;
+ import com.facebook.react.uimanager.ViewManager;
+-import com.mrousavy.camera.frameprocessor.FrameProcessorPlugin;
+-import com.mrousavy.camera.frameprocessor.FrameProcessorPluginRegistry;
++import com.mrousavy.camera.frameprocessors.FrameProcessorPlugin;
++import com.mrousavy.camera.frameprocessors.FrameProcessorPluginRegistry;
+ import com.visioncamerabase64plugin.VisionCameraBase64Plugin;
+ 
+ import java.util.Collections;
 @@ -14,10 +14,7 @@ import java.util.List;
  
  public class VisionCameraBase64PluginPackage implements ReactPackage {
