@@ -377,7 +377,7 @@ PODS:
     - glog
   - react-native-image-resizer (3.0.7):
     - React-Core
-  - react-native-worklets-core (0.4.0):
+  - react-native-worklets-core (1.3.3):
     - React
     - React-callinvoker
     - React-Core
@@ -491,16 +491,26 @@ PODS:
     - React-jsi (= 0.72.6)
     - React-logger (= 0.72.6)
     - React-perflogger (= 0.72.6)
-  - RNReanimated (3.8.1):
+  - RNGestureHandler (2.16.2):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - RNReanimated (3.11.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - ReactCommon/turbomodule/core
   - SocketRocket (0.6.1)
-  - VisionCamera (3.9.2):
+  - VisionCamera (4.0.4):
+    - VisionCamera/Core (= 4.0.4)
+    - VisionCamera/FrameProcessors (= 4.0.4)
+    - VisionCamera/React (= 4.0.4)
+  - VisionCamera/Core (4.0.4)
+  - VisionCamera/FrameProcessors (4.0.4):
     - React
     - React-callinvoker
-    - React-Core
     - react-native-worklets-core
+  - VisionCamera/React (4.0.4):
+    - React-Core
+    - VisionCamera/FrameProcessors
   - VisionCameraBase64Plugin (2.4.0):
     - React-Core
     - VisionCamera
@@ -573,6 +583,7 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - VisionCameraBase64Plugin (from `../node_modules/vision-camera-base64-v3`)
@@ -677,6 +688,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   VisionCamera:
@@ -721,7 +734,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 194e32c6aab382d88713ad3dd0025c5f5c4ee072
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
   react-native-image-resizer: 681f7607418b97c084ba2d0999b153b103040d8a
-  react-native-worklets-core: 2efe80a3ee87fe5e6fefa814e0e20c2708d3ad25
+  react-native-worklets-core: f51430dd07bf5343d4918d28a4bb00fe8f98b982
   React-NativeModulesApple: 02e35e9a51e10c6422f04f5e4076a7c02243fff2
   React-perflogger: e3596db7e753f51766bceadc061936ef1472edc3
   React-RCTActionSheet: 17ab132c748b4471012abbcdcf5befe860660485
@@ -739,9 +752,10 @@ SPEC CHECKSUMS:
   React-runtimescheduler: f23e337008403341177fc52ee4ca94e442c17ede
   React-utils: fa59c9a3375fb6f4aeb66714fd3f7f76b43a9f16
   ReactCommon: dd03c17275c200496f346af93a7b94c53f3093a4
-  RNReanimated: f4798af7dede23d41039f0bc372710ead86e90c7
+  RNGestureHandler: d678f94a8f74de70ce3d9f5d23eb0f97b686e943
+  RNReanimated: 9d4971e437f38c11fd2c43344ac9d40c330058b1
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  VisionCamera: 6c8ca7d04fc62fafccd8f8ad584e96f5303671f5
+  VisionCamera: b53fedb44eb4b153f90d29d295945901a188a1e7
   VisionCameraBase64Plugin: 459f1ef226329814a2a028c1b683161d4dc35c67
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
