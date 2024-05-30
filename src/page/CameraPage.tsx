@@ -13,6 +13,20 @@ import { useSharedValue } from "react-native-worklets-core";
 import { RNImageResizer } from "../integrations";
 import { toBase64 } from "vision-camera-base64-v3";
 
+import { Tensor, TensorflowModel, useTensorflowModel } from "react-native-fast-tflite";
+import { useResizePlugin } from "vision-camera-resize-plugin";
+
+function tensorToString(tensor: Tensor): string {
+  return `\n  - ${tensor.dataType} ${tensor.name}[${tensor.shape}]`;
+}
+function modelToString(model: TensorflowModel): string {
+  return (
+    `TFLite Model (${model.delegate}):\n` +
+    `- Inputs: ${model.inputs.map(tensorToString).join("")}\n` +
+    `- Outputs: ${model.outputs.map(tensorToString).join("")}`
+  );
+}
+
 export const CameraPage = () => {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
@@ -23,9 +37,19 @@ export const CameraPage = () => {
 
   const [isCameraInitialized, setIsCameraInitialized] = useState(false);
   const [photoUri, setPhotoUri] = useState<string>("");
-  console.log(">>>>> photoUri", photoUri);
-
+  // console.log(">>>>> photoUri", photoUri);
   // const [takePic, setTakePic] = useState(false);
+
+  // from https://www.kaggle.com/models/tensorflow/efficientdet/frameworks/tfLite
+  const model = useTensorflowModel(require("../assets/efficientdet.tflite"));
+  const actualModel = model.state === "loaded" ? model.model : undefined;
+
+  useEffect(() => {
+    if (actualModel == null) return;
+    console.log(`Model loaded! Shape:\n${modelToString(actualModel)}]`);
+  }, [actualModel]);
+
+  const { resize } = useResizePlugin();
 
   const handleTakePic = async () => {
     console.log("handleTakePic run");
@@ -58,35 +82,63 @@ export const CameraPage = () => {
     setIsCameraInitialized(true);
   }, []);
 
-  const frameProcessor = useFrameProcessor((frame) => {
-    "worklet";
+  const tfliteFrameProcessor = useFrameProcessor(
+    (frame) => {
+      "worklet";
 
-    runAtTargetFps(1, () => {
-      if (!takePic.value) {
-        console.log("SAVING FRAME...");
-        try {
-          const imageAsBase64 = toBase64(frame).toString();
-          isScanned.value = true;
-          const metadata = {
-            height: frame.height,
-            width: frame.width,
-            isMirrored: frame.isMirrored,
-            orientation: frame.orientation,
-          };
-
-          base64Image.value = `data:image/png;base64, ${imageAsBase64}`;
-
-          console.log(">>>> metadata", metadata);
-        } catch (error) {
-          console.log("Error in saving image", JSON.stringify(error));
+      runAtTargetFps(1, () => {
+        if (actualModel == null) {
+          // model is still loading...
+          return;
         }
 
-        takePic.value = false;
-      }
+        console.log(`Running inference on ${frame}`);
+        const resized = resize(frame, {
+          scale: {
+            width: 320,
+            height: 320,
+          },
+          pixelFormat: "rgb",
+          dataType: "uint8",
+        });
+        const result = actualModel.runSync([resized]);
+        const num_detections = result[3]?.[0] ?? 0;
+        console.log("Result: " + num_detections);
+      });
+    },
+    [actualModel],
+  );
 
-      // console.log(">>> frame", frame.pixelFormat);
-    });
-  }, []);
+  // original frame processor
+  // const frameProcessor = useFrameProcessor((frame) => {
+  //   "worklet";
+
+  //   runAtTargetFps(1, () => {
+  //     if (!takePic.value) {
+  //       console.log("SAVING FRAME...");
+  //       try {
+  //         const imageAsBase64 = toBase64(frame).toString();
+  //         isScanned.value = true;
+  //         const metadata = {
+  //           height: frame.height,
+  //           width: frame.width,
+  //           isMirrored: frame.isMirrored,
+  //           orientation: frame.orientation,
+  //         };
+
+  //         base64Image.value = `data:image/png;base64, ${imageAsBase64}`;
+
+  //         console.log(">>>> metadata", metadata);
+  //       } catch (error) {
+  //         console.log("Error in saving image", JSON.stringify(error));
+  //       }
+
+  //       takePic.value = false;
+  //     }
+
+  //     // console.log(">>> frame", frame.pixelFormat);
+  //   });
+  // }, []);
 
   return (
     <View>
@@ -100,6 +152,7 @@ export const CameraPage = () => {
           photo={true}
           ref={camera}
           video={false}
+          frameProcessor={tfliteFrameProcessor}
           // frameProcessor={isScanned.value === false ? frameProcessor : undefined}
         />
       )}
