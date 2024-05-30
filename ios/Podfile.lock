@@ -375,6 +375,9 @@ PODS:
   - React-jsinspector (0.72.6)
   - React-logger (0.72.6):
     - glog
+  - react-native-fast-tflite (1.2.0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - react-native-image-resizer (3.0.7):
     - React-Core
   - react-native-worklets-core (1.3.3):
@@ -499,6 +502,10 @@ PODS:
     - React-Core
     - ReactCommon/turbomodule/core
   - SocketRocket (0.6.1)
+  - vision-camera-resize-plugin (3.1.0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - VisionCamera
   - VisionCamera (4.0.4):
     - VisionCamera/Core (= 4.0.4)
     - VisionCamera/FrameProcessors (= 4.0.4)
@@ -564,6 +571,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-fast-tflite (from `../node_modules/react-native-fast-tflite`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-worklets-core (from `../node_modules/react-native-worklets-core`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -585,6 +593,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
+  - vision-camera-resize-plugin (from `../node_modules/vision-camera-resize-plugin`)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - VisionCameraBase64Plugin (from `../node_modules/vision-camera-base64-v3`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -650,6 +659,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-fast-tflite:
+    :path: "../node_modules/react-native-fast-tflite"
   react-native-image-resizer:
     :path: "../node_modules/@bam.tech/react-native-image-resizer"
   react-native-worklets-core:
@@ -692,6 +703,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
+  vision-camera-resize-plugin:
+    :path: "../node_modules/vision-camera-resize-plugin"
   VisionCamera:
     :path: "../node_modules/react-native-vision-camera"
   VisionCameraBase64Plugin:
@@ -733,6 +746,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 3bf18ff7cb03cd8dfdce08fbbc0d15058c1d71ae
   React-jsinspector: 194e32c6aab382d88713ad3dd0025c5f5c4ee072
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
+  react-native-fast-tflite: 5bb9280ebd4b5d5bae1bb131d9b339558c9d2768
   react-native-image-resizer: 681f7607418b97c084ba2d0999b153b103040d8a
   react-native-worklets-core: f51430dd07bf5343d4918d28a4bb00fe8f98b982
   React-NativeModulesApple: 02e35e9a51e10c6422f04f5e4076a7c02243fff2
@@ -755,6 +769,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: d678f94a8f74de70ce3d9f5d23eb0f97b686e943
   RNReanimated: 9d4971e437f38c11fd2c43344ac9d40c330058b1
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  vision-camera-resize-plugin: 1f85179679119341e9d5bd9565c614fd8b5de3eb
   VisionCamera: b53fedb44eb4b153f90d29d295945901a188a1e7
   VisionCameraBase64Plugin: 459f1ef226329814a2a028c1b683161d4dc35c67
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
