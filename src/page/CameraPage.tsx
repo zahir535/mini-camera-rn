@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
-import { useCameraPermission, useCameraDevice, Camera, CameraRuntimeError, PhotoFile, useFrameProcessor } from "react-native-vision-camera";
+import {
+  useCameraPermission,
+  useCameraDevice,
+  Camera,
+  CameraRuntimeError,
+  PhotoFile,
+  useFrameProcessor,
+  runAtTargetFps,
+} from "react-native-vision-camera";
 import { useSharedValue } from "react-native-worklets-core";
 import { RNImageResizer } from "../integrations";
 import { toBase64 } from "vision-camera-base64-v3";
@@ -53,29 +61,31 @@ export const CameraPage = () => {
   const frameProcessor = useFrameProcessor((frame) => {
     "worklet";
 
-    if (!takePic.value) {
-      console.log("SAVING FRAME...");
-      try {
-        const imageAsBase64 = toBase64(frame).toString();
-        isScanned.value = true;
-        const metadata = {
-          height: frame.height,
-          width: frame.width,
-          isMirrored: frame.isMirrored,
-          orientation: frame.orientation,
-        };
+    runAtTargetFps(1, () => {
+      if (!takePic.value) {
+        console.log("SAVING FRAME...");
+        try {
+          const imageAsBase64 = toBase64(frame).toString();
+          isScanned.value = true;
+          const metadata = {
+            height: frame.height,
+            width: frame.width,
+            isMirrored: frame.isMirrored,
+            orientation: frame.orientation,
+          };
 
-        base64Image.value = `data:image/png;base64, ${imageAsBase64}`;
+          base64Image.value = `data:image/png;base64, ${imageAsBase64}`;
 
-        console.log(">>>> metadata", metadata);
-      } catch (error) {
-        console.log("Error in saving image", JSON.stringify(error));
+          console.log(">>>> metadata", metadata);
+        } catch (error) {
+          console.log("Error in saving image", JSON.stringify(error));
+        }
+
+        takePic.value = false;
       }
 
-      takePic.value = false;
-    }
-
-    // console.log(">>> frame", frame.pixelFormat);
+      // console.log(">>> frame", frame.pixelFormat);
+    });
   }, []);
 
   return (
@@ -93,7 +103,7 @@ export const CameraPage = () => {
           // frameProcessor={isScanned.value === false ? frameProcessor : undefined}
         />
       )}
-      <Pressable style={{ padding: 16, width: "100%", alignItems: "center" }} onPress={handleTakePic} disabled={!isCameraInitialized}>
+      {/* <Pressable style={{ padding: 16, width: "100%", alignItems: "center" }} onPress={handleTakePic} disabled={!isCameraInitialized}>
         <Text>Take Pic</Text>
       </Pressable>
 
@@ -107,7 +117,7 @@ export const CameraPage = () => {
         <View>
           <Image source={{ uri: photoUri }} style={{ height: 200, width: 200 }} />
         </View>
-      ) : null}
+      ) : null} */}
     </View>
   );
 };
