@@ -10,6 +10,7 @@
     "test": "jest",
     "clean:android": "cd android/app && rm -rf build",
     "clean:pods": "cd ios && rm -rf pods && pod install",
+    "ios:13": "react-native run-ios --simulator=\"iPhone 13\"",
     "clean:ios": "npm run clean:pods && cd ios && rm -rf build",
     "clean:modules": "rm -rf node_modules && yarn",
     "install:pods": "cd ios && pod install",
