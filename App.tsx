@@ -6,16 +6,17 @@
  */
 
 import React from "react";
-import { SafeAreaView, StatusBar } from "react-native";
+import { StatusBar, View } from "react-native";
 
 import { CameraPage } from "./src/page/CameraPage";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 function App(): JSX.Element {
   return (
-    <SafeAreaView>
+    <SafeAreaProvider>
       <StatusBar barStyle={"light-content"} />
       <CameraPage />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
