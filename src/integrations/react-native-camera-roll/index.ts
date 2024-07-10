@@ -1,5 +1,5 @@
 import { PermissionsAndroid, Platform } from "react-native";
-import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import { CameraRoll, PhotoIdentifier } from "@react-native-camera-roll/camera-roll";
 
 const hasAndroidPermission = async () => {
   const getCheckPermissionPromise = () => {
@@ -40,6 +40,12 @@ const hasAndroidPermission = async () => {
   return await getRequestPermissionPromise();
 };
 
+const requestPermission = async () => {
+  if (Platform.OS === "android" && !(await hasAndroidPermission())) {
+    return;
+  }
+};
+
 interface savePictureProps {
   tag: string;
   type?: "photo" | "video" | "auto";
@@ -51,7 +57,9 @@ const savePicture = async ({ tag, type, album }: savePictureProps) => {
     return;
   }
 
-  CameraRoll.saveAsset(tag, { type, album });
+  const res: PhotoIdentifier = await CameraRoll.saveAsset(tag, { type, album });
+
+  return res;
 };
 
-export const RNCameraRoll = { savePicture };
+export const RNCameraRoll = { savePicture, requestPermission };

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Alert, Pressable, View } from "react-native";
 import {
   useCameraPermission,
   useCameraDevice,
@@ -8,29 +8,69 @@ import {
   PhotoFile,
   useFrameProcessor,
   runAtTargetFps,
+  RecordVideoOptions,
+  VideoFile,
+  CameraCaptureError,
 } from "react-native-vision-camera";
-import { RNImageResizer } from "../integrations";
+import { RNCameraRoll, RNImageResizer } from "../integrations";
 import { DEVICE } from "../constant/constant";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ImageButton } from "../component/ImageButton";
 
 export const CameraPage = () => {
-  const { bottom } = useSafeAreaInsets();
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
   const camera = useRef<Camera>(null);
 
   const [, setIsCameraInitialized] = useState(false);
-  const [, setPhotoUri] = useState<string>("");
+  const [isVideo, setIsVideo] = useState(false);
 
   const handleTakePic = async () => {
-    console.log("handleTakePic run");
     if (camera !== null && camera.current) {
-      const file: PhotoFile = await camera.current.takePhoto({});
-      // interchange width and height because of wrong orientation
+      const file: PhotoFile = await camera.current.takeSnapshot({ quality: 100 });
+      // const file: PhotoFile = await camera.current. takePhoto({});
       const filePath = `file://${file.path}`;
       const resizeResponse = await RNImageResizer.createResizedImage(filePath, file.width, file.height, "PNG", 100);
-      setPhotoUri(resizeResponse?.uri || "");
+      if (resizeResponse?.uri) {
+        const res = await RNCameraRoll.savePicture({ tag: resizeResponse?.uri, type: "photo", album: "miniCameraRn pictures" });
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> res", JSON.stringify(res));
+      }
+    }
+  };
+
+  const onFinishRecording = async (video: VideoFile) => {
+    console.log("onFinishRecording");
+    // todo save to gallery
+    const videoFile = video.path;
+    const res = await RNCameraRoll.savePicture({ tag: videoFile, type: "video", album: "miniCameraRn pictures" });
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> res", JSON.stringify(res));
+    setIsVideo(false);
+  };
+
+  const onErrorRecording = async (error: CameraCaptureError) => {
+    console.log("onErrorRecording");
+    // todo handling error
+    console.log(">>>> error", JSON.stringify(error));
+    Alert.alert("Error in taking video.");
+    setIsVideo(false);
+  };
+
+  const handleStartVideo = async () => {
+    setIsVideo(true);
+    if (camera !== null && camera.current) {
+      const videoOptions: RecordVideoOptions = {
+        fileType: "mp4",
+        videoCodec: "h265",
+        onRecordingError: onErrorRecording,
+        onRecordingFinished: onFinishRecording,
+      };
+      await camera.current.startRecording(videoOptions);
+    }
+  };
+
+  const handleStopVideo = async () => {
+    console.log("handleStopVideo");
+    if (camera !== null && camera.current) {
+      await camera.current.stopRecording();
     }
   };
 
@@ -38,10 +78,16 @@ export const CameraPage = () => {
     console.log("handleOpenGallery run");
   };
 
-  useEffect(() => {
+  const handleInitPermission = async () => {
     if (hasPermission === false) {
-      requestPermission();
+      await requestPermission();
     }
+
+    await RNCameraRoll.requestPermission();
+  };
+
+  useEffect(() => {
+    handleInitPermission();
   }, []);
 
   // Camera callbacks
@@ -79,7 +125,7 @@ export const CameraPage = () => {
           onInitialized={onInitialized}
           photo={true}
           ref={camera}
-          video={false}
+          video={true}
           // frameProcessor={isScanned.value === false ? frameProcessor : undefined}
         />
       )}
@@ -93,7 +139,7 @@ export const CameraPage = () => {
           <View
             style={{
               width: DEVICE.WIDTH,
-              height: 0.15 * DEVICE.HEIGHT,
+              height: 0.3 * DEVICE.HEIGHT,
               backgroundColor: black60,
               justifyContent: "space-around",
               alignItems: "center",
@@ -101,12 +147,12 @@ export const CameraPage = () => {
             }}>
             <ImageButton onPress={handleOpenGallery} isMultiLayered={true} />
             <Pressable
-              onPress={handleTakePic}
+              onPress={isVideo ? handleStopVideo : handleTakePic}
+              onLongPress={handleStartVideo}
               style={{ height: 0.1 * DEVICE.HEIGHT, width: 0.1 * DEVICE.HEIGHT, backgroundColor: "white", borderRadius: 40 }}
             />
             <View style={{ height: 0.08 * DEVICE.HEIGHT, width: 0.08 * DEVICE.HEIGHT, backgroundColor: "transparent", borderRadius: 4 }} />
           </View>
-          <View style={{ height: bottom, backgroundColor: black60 }} />
         </View>
       </View>
     </View>
