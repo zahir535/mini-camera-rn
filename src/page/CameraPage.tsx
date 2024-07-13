@@ -15,6 +15,7 @@ import {
 import { RNCameraRoll, RNImageResizer } from "../integrations";
 import { DEVICE } from "../constant/constant";
 import { ImageButton } from "../component/ImageButton";
+import { CaptureButton } from "../component/CaptureButton";
 
 export const CameraPage = () => {
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -69,9 +70,9 @@ export const CameraPage = () => {
 
   const handleStopVideo = async () => {
     console.log("handleStopVideo");
-    if (camera !== null && camera.current) {
-      await camera.current.stopRecording();
-    }
+    // if (camera !== null && camera.current) {
+    //   await camera.current.stopRecording();
+    // }
   };
 
   const handleOpenGallery = () => {
@@ -145,12 +146,8 @@ export const CameraPage = () => {
               alignItems: "center",
               flexDirection: "row",
             }}>
-            <ImageButton onPress={handleOpenGallery} isMultiLayered={true} />
-            <Pressable
-              onPress={isVideo ? handleStopVideo : handleTakePic}
-              onLongPress={handleStartVideo}
-              style={{ height: 0.1 * DEVICE.HEIGHT, width: 0.1 * DEVICE.HEIGHT, backgroundColor: "white", borderRadius: 40 }}
-            />
+            <ImageButton onPress={handleOpenGallery} onLongPress={handleStartVideo} isMultiLayered={true} />
+            <CaptureButton onPress={isVideo ? handleStopVideo : handleTakePic} onLongPress={handleStartVideo} />
             <View style={{ height: 0.08 * DEVICE.HEIGHT, width: 0.08 * DEVICE.HEIGHT, backgroundColor: "transparent", borderRadius: 4 }} />
           </View>
         </View>
