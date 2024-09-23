@@ -39,6 +39,7 @@ export const CameraPage = () => {
   };
 
   const onFinishRecording = async (video: VideoFile) => {
+    await camera.current?.stopRecording();
     console.log("onFinishRecording");
     // todo save to gallery
     const videoFile = video.path;
@@ -56,6 +57,7 @@ export const CameraPage = () => {
   };
 
   const handleStartVideo = async () => {
+    console.log("handleStartVideo");
     setIsVideo(true);
     if (camera !== null && camera.current) {
       const videoOptions: RecordVideoOptions = {
@@ -70,9 +72,9 @@ export const CameraPage = () => {
 
   const handleStopVideo = async () => {
     console.log("handleStopVideo");
-    // if (camera !== null && camera.current) {
-    //   await camera.current.stopRecording();
-    // }
+    if (camera !== null && camera.current) {
+      await camera.current.stopRecording();
+    }
   };
 
   const handleOpenGallery = () => {
@@ -146,8 +148,13 @@ export const CameraPage = () => {
               alignItems: "center",
               flexDirection: "row",
             }}>
-            <ImageButton onPress={handleOpenGallery} onLongPress={handleStartVideo} isMultiLayered={true} />
-            <CaptureButton onPress={isVideo ? handleStopVideo : handleTakePic} onLongPress={handleStartVideo} />
+            <ImageButton onPress={handleOpenGallery} isMultiLayered={true} />
+            <CaptureButton
+              //  onPress={handleTakePic}
+              onPress={isVideo ? handleStopVideo : handleTakePic}
+              onLongPress={handleStartVideo}
+              // onStopVideo={handleStopVideo}
+            />
             <View style={{ height: 0.08 * DEVICE.HEIGHT, width: 0.08 * DEVICE.HEIGHT, backgroundColor: "transparent", borderRadius: 4 }} />
           </View>
         </View>

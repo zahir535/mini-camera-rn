@@ -2,22 +2,15 @@ import { Pressable, ViewStyle } from "react-native";
 import React, { FunctionComponent, useEffect, useLayoutEffect, useState } from "react";
 import { DEVICE } from "../constant/constant";
 import { useBackgroundTimer } from "../hook";
-import Animated, {
-  interpolate,
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-  cancelAnimation,
-} from "react-native-reanimated";
+import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming, cancelAnimation } from "react-native-reanimated";
 
 interface CaptureButtonProps {
-  onPress: () => void;
-  onLongPress: () => void;
+  onPress: () => Promise<void>;
+  onLongPress: () => Promise<void>;
+  onStopVideo?: () => Promise<void>;
 }
 
-export const CaptureButton: FunctionComponent<CaptureButtonProps> = ({ onPress, onLongPress }) => {
+export const CaptureButton: FunctionComponent<CaptureButtonProps> = ({ onPress, onLongPress, onStopVideo }) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const { timer: videoTimer, setTimer: setVideoTimer, clearTimerInterval } = useBackgroundTimer(0);
 
@@ -81,6 +74,9 @@ export const CaptureButton: FunctionComponent<CaptureButtonProps> = ({ onPress, 
         scale.value = withTiming(1, { duration: 300 });
         progress.value = withTiming(0, { duration: 200 });
         setVideoTimer(0);
+        if (onStopVideo) {
+          onStopVideo();
+        }
       }
     }
   }, [isPressed, videoTimer]);
@@ -107,6 +103,7 @@ export const CaptureButton: FunctionComponent<CaptureButtonProps> = ({ onPress, 
         console.log(">>>>>> onPress runs");
         handleStartAnimation();
         setVideoTimer(0);
+        onPress();
       }} // onPress from props
       onLongPress={() => {
         console.log(">>>>>> onLongPress runs");
@@ -114,7 +111,7 @@ export const CaptureButton: FunctionComponent<CaptureButtonProps> = ({ onPress, 
         handleStartAnimation();
         setVideoTimer(3);
         progress.value = withTiming(1, { duration: 200 });
-        // onLongPress()
+        onLongPress();
       }} // onLongPress from props
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}>
